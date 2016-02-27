@@ -1,8 +1,8 @@
 ballyCyrk.factory('userFactory', function($http, $cookies){
   var usersLoggedIn = [];
   var factory = {};
-
   var socket = io.connect();
+  factory.socket = socket;
 
   function setCookie(output) {
     $cookies.putObject('currentUser', output);
@@ -27,7 +27,6 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     })
   }
 
-  factory.socket = socket;
 
   factory.facebook = function(callback){
     $http.get('/auth/facebook').success(function(output){
@@ -47,6 +46,7 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
       callback(output);
     })
   }
+
   factory.loggedin = function(user, callback){
     var i = 0
     while (i < usersLoggedIn.length){
@@ -61,13 +61,9 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     if (!present){
       usersLoggedIn.push(user);
     };
-    // socket.emit("login", {id: user._id,
-    //                 username: user.username});
     callback(user);
   }
   factory.confirmLogin = function(user, callback){
-    console.log("CONFIRM", user)
-    console.log("CONFIRM", usersLoggedIn)
     var i = 0
     while (i < usersLoggedIn.length){
       if (user._id == usersLoggedIn[i]._id){

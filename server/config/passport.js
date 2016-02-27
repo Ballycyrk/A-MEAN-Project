@@ -54,9 +54,9 @@ module.exports        = function(passport){
           User.findOne({email : email}, function(err, user) {
             if (err) { return res(err); };
             if (user) {
-              user.username = req.body.username;
-              user.online = true;
-              user.local.email = req.body.email; // req.body.email?
+              user.username       = req.body.username;
+              user.online         = true
+              user.local.email    = req.body.email; // req.body.email?
               user.local.password = user.generateHash(password);
               user.save(function(err, result) {
                 if (err) {
@@ -68,11 +68,11 @@ module.exports        = function(passport){
             } else {
               var newUser = new User();
               // set the user's local credentials
-              newUser.email = req.body.email;
-              newUser.username = req.body.username;
-              newUser.online = true;
-              newUser.local.email = req.body.email; // req.body.email?
-              newUser.local.password = newUser.generateHash(password); // req.body.password?
+              newUser.email           = req.body.email;
+              newUser.username        = req.body.username;
+              newUser.online          = true
+              newUser.local.email     = req.body.email; // req.body.email?
+              newUser.local.password  = newUser.generateHash(password); // req.body.password?
               newUser.save(function(err, result) {
                 if (err) {
                   throw (err);
@@ -133,7 +133,7 @@ module.exports        = function(passport){
     // asynchronous
     process.nextTick(function() {
       // find the user in the database based on their facebook id
-      User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
+      User.findOne({ email : profile.emails[0].value }, function(err, user) {
         // if there is an error, stop everything and return that
         // ie an error connecting to the database
         if (err)
@@ -146,6 +146,9 @@ module.exports        = function(passport){
         } else {
           // if there is no user found with that facebook id, create them
           var newUser            = new User();
+          newUser.username       = profile.name.givenName;
+          newUser.email          = profile.emails[0].value;
+          newUser.online         = true;
           // set all of the facebook information in our user model
           newUser.facebook.id    = profile.id; // set the users facebook id
           newUser.facebook.token = token; // we will save the token that facebook provides to the user

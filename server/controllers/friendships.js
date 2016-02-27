@@ -78,11 +78,9 @@ module.exports ={
         for (var i=0; i < success.length; i++){
           if (req.params.id == success[i].his.username._id) {
             asked.push(success[i].her.username);
-          console.log("HER********************", success[i].her);
           }
           if (req.params.id == success[i].her.username._id) {
             asked.push(success[i].his.username);
-          console.log("HIS********************", success[i].his);
           }
         };
         res.json(asked);
@@ -93,8 +91,6 @@ module.exports ={
   accept: function(req, res){
     var you = req.body.him._id;
     var them = req.body.her._id;
-    console.log("**************YOU**************", you);
-    console.log("**************THEM**************", them);
     Friendship.findOne({'his.username': them, 'her.username': you}, function(err, fini){
       if (err) {
         console.log("ACCEPT ERROR", err);

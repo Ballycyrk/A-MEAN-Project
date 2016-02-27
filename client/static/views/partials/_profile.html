@@ -13,6 +13,8 @@
             <strong>username</strong>: <span ng-bind="PC.user.username"></span><br>
             <strong>email</strong>: <span ng-bind="PC.user.local.email"></span>
             <br>
+            <strong>socket</strong>: <span ng-bind="PC.user.socket"></span>
+            <br>
             <strong>password</strong>: <span ng-bind="PC.user.local.password">
             </span>
           </p>
@@ -91,11 +93,11 @@
     <tbody>
       <tr ng-repeat="friend in PC.friends">
         <td ng-bind="friend.username"></td>
-        <td ng-if="friend.online">
-          <button class="btn btn-xs btn-success" ng-click="PC.requestCall(PC.users_online[$index])">Chat</button>
+        <td ng-show="friend.socket && friend.online">
+          <button class="btn btn-xs btn-success" ng-click="PC.requestCall(friend)">Chat</button>
         </td>
-        <td ng-if="friend.online == false">
-          <button class="btn btn-xs btn" ng-click="PC.requestCall(PC.users_online[$index])">Offline</button>
+        <td ng-hide="friend.socket && friend.online">
+          <button class="btn btn-xs">Offline</button>
         </td>
       </tr>
     </tbody>

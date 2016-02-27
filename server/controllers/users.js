@@ -35,7 +35,6 @@ module.exports ={
     });
   },
   logout: function(req, res){
-    console.log(req.body._id)
     User.findOne({_id: req.body._id}, function (err, user){
       user.online = false;
       user.save();

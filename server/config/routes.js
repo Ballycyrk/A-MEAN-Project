@@ -11,14 +11,10 @@ module.exports = function(app, passport){
   app.post('/confirm/:id',  friendship.confirm)
   app.post('/delete',       friendship.delete)
   app.post('/accept',       friendship.accept)
-// ===========================================================================
-// ======================= AUTHENTICATE (FIRST LOGIN) ========================
-// ===========================================================================
-
-// =====================================
-// LOCAL ROUTES ========================
-// =====================================
-// route for facebook authentication and login
+  // =====================================
+  // LOCAL ROUTES ========================
+  // =====================================
+  // route for facebook authentication and login
   // show the login form & pass any flash data if it exists
   // res.render('login.ejs', {message: req.flash('loginMessage') });
   app.post('/login',            passport.authenticate('local-login', {
@@ -35,10 +31,10 @@ module.exports = function(app, passport){
     function(req, res) {
       res.json({user: req.user});
   });
-// =====================================
-// FACEBOOK ROUTES =====================
-// =====================================
-// route for facebook authentication and login
+  // =====================================
+  // FACEBOOK ROUTES =====================
+  // =====================================
+  // route for facebook authentication and login
   app.get('/auth/facebook', passport.authenticate('facebook',
                                                   { scope : ['email'] }));
   // handle the callback after facebook has authenticated the user
@@ -62,26 +58,22 @@ module.exports = function(app, passport){
                   failureRedirect : '/'
           }));
 
-// =====================================
-// PROFILE SECTION =====================
-// =====================================
-// we will want this protected so you have to be logged in to visit
-// we will use route middleware to verify this (the isLoggedIn function)
+  // =====================================
+  // PROFILE SECTION =====================
+  // =====================================
+  // we will want this protected so you have to be logged in to visit
+  // we will use route middleware to verify this (the isLoggedIn function)
   app.get('/localProfile', isLoggedIn, function(req, res) {
-    console.log("PROFILE IN LOCAL ROUTES", req.user);
     res.json({user: req.user});
   });
   app.get('/profile', isLoggedIn, function(req, res) {
-    console.log("PROFILE IN ROUTES", req.user);
     res.redirect('/#/profile/'+req.user._id);
   });
 
-
-// =====================================
-// LOGOUT ==============================
-// =====================================
+  // =====================================
+  // LOGOUT ==============================
+  // =====================================
   app.post('/logout', function(req, res) {
-    console.log("PROFILE IN ROUTES", req.user);
     user.logout(req, res)
     req.logout();
     res.json({success: true});

@@ -2,7 +2,7 @@ var mongoose      = require('mongoose');
 var bcrypt        = require('bcrypt-nodejs');
 var Schema        = mongoose.Schema;
 
-var UserSchema = new Schema({
+var UserSchema    = new Schema({
   username        : {type: String },
   online          : {type: Boolean},
   email           : { type: String },
@@ -16,25 +16,7 @@ var UserSchema = new Schema({
     email         : { type: String },
     name          : { type: String }
   },
-  twitter         : {
-    id            : { type: String },
-    token         : { type: String },
-    displayName   : { type: String },
-    username      : { type: String }
-  },
   google          : {
-    id            : { type: String },
-    token         : { type: String },
-    email         : { type: String },
-    name          : { type: String }
-  },
-  youtube         : {
-    id            : { type: String },
-    token         : { type: String },
-    email         : { type: String },
-    name          : { type: String }
-  },
-  vimeo           : {
     id            : { type: String },
     token         : { type: String },
     email         : { type: String },
