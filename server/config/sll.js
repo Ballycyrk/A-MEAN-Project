@@ -1,20 +1,5 @@
-var Node = (function(){
 
-  function Node(data) {
-    this.data = data;
-    this.next = null;
-  }
-
-  Node.prototype.show = function() {
-    return this.data;
-  }
-
-  return Node;
-})();
-
-module.exports = Node;
-
-
+var Node             = require('./sllNode.js');
 var SinglyLinkedList = (function(){
 
   function SinglyLinkedList(){
@@ -23,26 +8,65 @@ var SinglyLinkedList = (function(){
       this.count = 0;
     }
 
-    SinglyLinkedList.prototype.find = function(element) {
-      var currentNode = this.head;
-      while(currentNode !== null && currentNode.element !== element) {
-        currentNode = currentNode.next;
+    // SinglyLinkedList.prototype.find = function(node) {
+    //   var currentNode = this.head;
+    //   while(currentNode !== null && currentNode.user !== user) {
+    //     currentNode = currentNode.next;
+    //   }
+    //   return currentNode;
+    // }
+
+    SinglyLinkedList.prototype.insert = function (user, socket) {
+      var newNode = new Node(user, socket);
+      var insert = true
+      if (this.head == null) {
+        this.head = newNode;
+        this.count++;
+      } else if (this.head.user == user) {
+        this.head.socket = socket;
+      } else {
+        var runner = this.head;
+        while (runner.next) {
+          if (runner.next.user == user) {
+            runner.next.socket = socket;
+            insert = false;
+          }
+          runner = runner.next
+        }
+        if (insert) {
+          runner.next = newNode;
+          this.count++;
+        }
       }
-      return currentNode;
     }
 
-    SinglyLinkedList.prototype.insert = function (newElement) {
-      var newNode = new Node(newElement);
-      var current = this.head;
-      newNode.next = current.next;
-      current.next = newNode;
+    SinglyLinkedList.prototype.remove = function(socket) {
+      if (this.head == null) {
+        return SinglyLinkedList;
+      } else if (this.head.socket == socket) {
+        this.head = this.head.next;
+      } else {
+        var runner = this.head;
+        while (runner.next) {
+          if (runner.next.socket == socket) {
+            runner.next = runner.next.next;
+          }
+          runner = runner.next;
+        }
+      }
+      this.count--;
     }
 
-    SinglyLinkedList.prototype.remove = function(element) {
-      var previousNode = this.findPrevious(element);
-      if(previousNode.next !== null) {
-        previousNode.next = previousNode.next.next;
+    SinglyLinkedList.prototype.findSocket = function(userID) {
+      var runner = this.head;
+      while (runner) {
+        if (runner.user == userID) {
+          return runner.socket;
+        } else {
+          runner = runner.next;
+        }
       }
+      return {error: "User not found"};
     }
 
     return SinglyLinkedList

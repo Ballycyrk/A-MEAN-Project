@@ -8,7 +8,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
       userFactory.confirmLogin(_this.user, function(data){
         if (!data) { $location.path('#/'); }
       });
-      socket.emit("getId", _this.user);
+      socket.emit("logging-in", _this.user);
     });
   }
 
@@ -112,9 +112,9 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   }
 
   this.requestCall = function(friend){
-    userFactory.socket.emit("requestCall", {"receptionSocket": friend.socket,
-                                    "donorSocket": _this.user.socket,
-                                    "donorName": _this.user.username
+    socket.emit("requestCall", {"receptionSocket": friend._id,
+                                    "hostId": _this.user._id,
+                                    "hostName": _this.user.username
                                 });
   }
   // ************************* SOCKETS ****************************

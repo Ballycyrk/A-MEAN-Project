@@ -93,10 +93,10 @@
     <tbody>
       <tr ng-repeat="friend in PC.friends">
         <td ng-bind="friend.username"></td>
-        <td ng-show="friend.socket && friend.online">
+        <td ng-show="friend.online">
           <button class="btn btn-xs btn-success" ng-click="PC.requestCall(friend)">Chat</button>
         </td>
-        <td ng-hide="friend.socket && friend.online">
+        <td ng-hide="friend.online">
           <button class="btn btn-xs">Offline</button>
         </td>
       </tr>
