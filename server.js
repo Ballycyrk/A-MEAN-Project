@@ -44,24 +44,26 @@ var httpsServer = https.createServer(options, app);
 var server = httpsServer.listen(port, function() {console.log('this should work')});
 
 // SOCKET CONNECTION //
-var users_online = new SinglyLinkedList();
+var users_online = []
 
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
     console.log("We are using sockets");
     console.log(socket.id);
     console.log("----------------------------");
-    console.log(users_online.count);
+    console.log(users_online);
     console.log("----------------------------");
     // io.sockets.emit("refresh", socket.id);
     socket.on("getId", function(data) {
-        if (users_online > 0) {
+        if (users_online.length > 0) {
             for (var idx = 0; idx < users_online.length; idx++) {
                 if (users_online[idx].id = data.id){
                     users.online[idx].socket = socket.id;
                     break;
                 }
             }
+            data.socket = socket.id;
+            users_online.push(data);
         } else {
             data.socket = socket.id;
             users_online.push(data);
