@@ -117,7 +117,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
                                 });
   }
   // ************************* SOCKETS ****************************
-
+  // break this into two diffent emits.  User & Others.  Attempt to have server store sockets and clien only get them when requesting a call.
   socket.on("user-id", function(data) {
     $rootScope.$apply(function(){
       for (var onlineIdx = 0; onlineIdx < data.length; onlineIdx++) {
