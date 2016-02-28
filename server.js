@@ -51,10 +51,11 @@ io.sockets.on('connection', function(socket) {
     console.log("We are using sockets");
     console.log(socket.id);
     console.log("----------------------------");
-    console.log(users_online);
+    // console.log(users_online);
     console.log("----------------------------");
     // io.sockets.emit("refresh", socket.id);
     socket.on("getId", function(data) {
+        console.log(data);
         if (users_online.length > 0) {
             for (var idx = 0; idx < users_online.length; idx++) {
                 if (users_online[idx].id = data.id){

@@ -1,8 +1,6 @@
 ballyCyrk.factory('userFactory', function($http, $cookies){
   var usersLoggedIn = [];
   var factory = {};
-  var socket = io.connect();
-  factory.socket = socket;
 
   function setCookie(output) {
     $cookies.putObject('currentUser', output);
@@ -42,6 +40,7 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
 
   factory.show = function(id, callback){
     $http.get('/user/'+id).success(function(output){
+      socket.emit("getId", output);
       setCookie(output);
       callback(output);
     })

@@ -8,7 +8,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
       userFactory.confirmLogin(_this.user, function(data){
         if (!data) { $location.path('#/'); }
       });
-      socket.emit("getId", _this.user);
     });
   }
 
@@ -112,7 +111,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   }
 
   this.requestCall = function(friend){
-    userFactory.socket.emit("requestCall", {"receptionSocket": friend.socket,
+    socket.emit("requestCall", {"receptionSocket": friend.socket,
                                     "donorSocket": _this.user.socket,
                                     "donorName": _this.user.username
                                 });
