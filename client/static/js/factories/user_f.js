@@ -1,5 +1,5 @@
 ballyCyrk.factory('userFactory', function($http, $cookies){
-  var usersLoggedIn = [];
+  var userLoggedIn = {};
   var factory = {};
 
   function setCookie(output) {
@@ -20,20 +20,22 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
 
   factory.loginUser = function(user, callback){
     $http.post('/login', user).success(function(output){
-      usersLoggedIn = [];
+      userLoggedIn = output; //consider boiling this down
+      console.log("userLogin", output)
       callback(output);
     })
   }
 
-
   factory.facebook = function(callback){
     $http.get('/auth/facebook').success(function(output){
+      userLoggedIn = output; //consider boiling this down
       callback(output);
     })
   }
 
   factory.google = function(callback){
       $http.get('/auth/google').success(function(output){
+<<<<<<< HEAD
       callback(output);
     })
   }
@@ -42,57 +44,59 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     $http.get('/user/'+id).success(function(output){
       socket.emit("getId", output);
       setCookie(output);
+=======
+      userLoggedIn = output; //consider boiling this down
+>>>>>>> sll
       callback(output);
     })
   }
 
   factory.loggedin = function(user, callback){
-    var i = 0
-    while (i < usersLoggedIn.length){
-      if (user._id == usersLoggedIn[i]._id){
-        var present = true;
-        break;
-      } else {
-        i++
-        console.log('i = ', i);
-      };
+    console.log('user', user);
+    console.log('UserLoggedIn', userLoggedIn);
+    if (userLoggedIn.user._id == user._id) {
+      console.log("YES");
+      callback(user);
+    } else {
+      console.log("NO");
+      callback(null);
     }
-    if (!present){
-      usersLoggedIn.push(user);
-    };
-    callback(user);
   }
+
+  factory.show = function(id, callback){
+    console.log("SHOW", id, userLoggedIn);
+    if (!userLoggedIn.user)
+      callback(null);
+    else
+      callback(userLoggedIn);
+  }
+
   factory.confirmLogin = function(user, callback){
-    var i = 0
-    while (i < usersLoggedIn.length){
-      if (user._id == usersLoggedIn[i]._id){
-        var present = true;
-        break;
-      } else {
-        i++
-        console.log('i = ', i);
-      };
-    }
-    if (present){
+    if (userLoggedIn.user._id == user._id){
       callback(true);
     } else {
-      usersLoggedIn.push(user);
-      callback(true);
+    console.log("user logged in - else clause", userLoggedIn);
+      callback(false);
     }
   }
+
+  factory.refresh = function(user) {
+    userLoggedIn = user;
+    console.log('refresh', userLoggedIn)
+  }
+
   factory.logout = function(user, callback){
-    $cookies.remove('currentUser');
-    for (var i =0; i < usersLoggedIn.length; i++){
-      if (user._id == usersLoggedIn[i]._id){
-        usersLoggedIn.splice(i,1);
-    $http.post('/logout', user).success(function(data){
-        });
-        callback(false);
-        break;
+    // $cookies.remove('currentUser');
+    console.log('LOGOUT', userLoggedIn);
+    socket.emit("logout", userLoggedIn.user._id);
+    $http.post('/logout', userLoggedIn.user).success(function(data){
+      if (data){
+        userLoggedIn = {};
+        callback(false)
       } else {
-      callback(true);
+        console.log("Error with logout");
       }
-    }
+    });
   }
 
   return factory;

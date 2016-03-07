@@ -1,14 +1,14 @@
-var express       = require('express');
-var path          = require('path');
-var https         = require('https');
-var fs 			  = require('fs');
-var port          = process.env.PORT || 5001;
-var passport      = require('passport');
-var cookieParser  = require('cookie-parser');
-var bodyParser    = require('body-parser');
-var session       = require('express-session');
+var express          = require('express');
+var path             = require('path');
+var https            = require('https');
+var fs 			     = require('fs');
+var port             = process.env.PORT || 5001;
+var passport         = require('passport');
+var cookieParser     = require('cookie-parser');
+var bodyParser       = require('body-parser');
+var session          = require('express-session');
 var SinglyLinkedList = require('./server/config/sll.js');
-var app           = express();
+var app              = express();
 
 
 // setup for express application
@@ -44,7 +44,7 @@ var httpsServer = https.createServer(options, app);
 var server = httpsServer.listen(port, function() {console.log('this should work')});
 
 // SOCKET CONNECTION //
-var users_online = []
+var users_online = new SinglyLinkedList;
 
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
@@ -53,54 +53,37 @@ io.sockets.on('connection', function(socket) {
     console.log("----------------------------");
     // console.log(users_online);
     console.log("----------------------------");
-    // io.sockets.emit("refresh", socket.id);
-    socket.on("getId", function(data) {
-        console.log(data);
-        if (users_online.length > 0) {
-            for (var idx = 0; idx < users_online.length; idx++) {
-                if (users_online[idx].id = data.id){
-                    users.online[idx].socket = socket.id;
-                    break;
-                }
-            }
-            data.socket = socket.id;
-            users_online.push(data);
-        } else {
-            data.socket = socket.id;
-            users_online.push(data);
-        }
-        io.sockets.emit("user-id", users_online);
+    socket.on("logging-in", function(data) {
+        users_online.insert(data, socket.id)
+        console.log("hello", users_online);
+    });
+
+    socket.on("refreshing", function(data) {
+        var you = users_online.refresh(data, socket.id);
+        if (you)
+            you._id = you.user;
+        console.log("refreshed you", you);
+        io.to(socket.id).emit("refreshed", you);
     });
 
     socket.on("logout", function(data) {
-    	for (var i = 0; i < users_online.length; i++) {
-    		if (users_online[i].id == data.user._id) {
-    			users_online.splice(i, 1);
-    		}
-    	}
-    	io.sockets.emit("users-online", users_online);
+        users_online.remove(socket.id);
+        console.log("logout", users_online);
+        io.sockets.emit("users-online", users_online);
     });
 
-    // socket.on("disconnect", function() {
-    //     console.log(socket.id, "disconnected");
-    //     delete users[socket.id];
-    //     for (var i = 0; i < users_online.length; i++) {
-    //         if (users_online[i].socket == socket.id) {
-    //             users_online.splice(i, 1);
-    //         }
-    //     }
-    //     io.sockets.emit("users-online", users_online);
-    // });
-
     socket.on("requestCall", function(data) {
-        var temp = data.receptionSocket;
-        socket.broadcast.to(temp).emit("requestingCall", {"donorSocket": data.donorSocket, "donorName": data.donorName});
+        console.log("request", data)
+        var host = users_online.findSocket(data.hostId);
+        var friend = users_online.findSocket(data.receptionSocket);
+        console.log("host", host)
+        console.log("friend", friend)
+        socket.broadcast.to(friend).emit("requestingCall", {"donorSocket": host, "donorName": data.hostName});
     });
 
     socket.on("callAccepted", function(data) {
         console.log("***********ACCEPTED*************", data);
-        socket.broadcast.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID
-                                                     });
+        socket.broadcast.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID});
     });
 
     socket.broadcast.on("callDeclined", function(data) {
@@ -109,8 +92,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function() {
-    console.log("Bye Bye Socket:", socket.id);
-
+        console.log("Bye Bye Socket:", socket.id);
     })
 })
 

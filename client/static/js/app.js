@@ -27,7 +27,7 @@ ballyCyrk.config(function($routeProvider){
     templateUrl: 'static/partials/video_channel.html',
     controller: 'VideoChatController as VCC'
   })
-  .when('/videoChat/:idOne/:idTwo', {
+  .when('/videoChat/:idOne', {
     templateUrl: './../static/views/partials/_videochatroom.html',
     controller: 'VideoChatController as VCC'
   })

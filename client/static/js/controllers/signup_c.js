@@ -8,7 +8,6 @@ ballyCyrk.controller('signupController', function(userFactory, $location){
       } else {
         _this.user = data.user;
         userFactory.loggedin(_this.user, function(data){
-          console.log('deep_c', data);
           var id = data._id;
           $location.path('/profile/'+id);
         });

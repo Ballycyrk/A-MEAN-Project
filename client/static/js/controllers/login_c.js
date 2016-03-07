@@ -7,22 +7,11 @@ ballyCyrk.controller('loginController', function(userFactory, $location){
         _this.message = data
       } else {
         _this.user = data.user;
+        console.log(_this.user);
         userFactory.loggedin(_this.user, function(data){
-          var id = data._id;
-          $location.path('/profile/'+id);
+          $location.path('/profile/'+data._id);
         });
       }
     });
-  }
-
-  this.logout = function(){
-    if (!_this.user){
-      $location.path('#/')
-    } else {
-    userFactory.logout(_this.user, function(data){
-        console.log(data);
-        if (!data) { $location.path('#/'); };
-      });
-    }
   }
 })
