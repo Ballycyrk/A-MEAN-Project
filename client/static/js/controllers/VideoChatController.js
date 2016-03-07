@@ -2,7 +2,7 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
     _VCC = this;
     _VCC.audioValue = 'Mute';
     _VCC.videoValue = 'Pause';
-
+    console.log('Hello');
 
     this.back = function() {
         console.log('/profile/' + $cookies.getObject('currentUser')._id);
@@ -10,7 +10,7 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
     }
 
     this.logout = function(){
-      userFactory.socket.emit("logout", {user: $cookies.getObject('currentUser')});
+      socket.emit("logout", {user: $cookies.getObject('currentUser')._id});
       if (!$cookies.getObject('currentUser')){
         $location.path('#/')
       } else {
@@ -25,7 +25,7 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
     var video_thumb = document.getElementById('vid-thumb');
 
     this.login = function () {
-        // publish_key and subscribe_key, create a pubnub account and 
+        // publish_key and subscribe_key, create a pubnub account and
         // get the information from there
         var phone = window.phone = PHONE({
             number : _VCC.currentUser.username || 'Anonymous',
@@ -38,7 +38,7 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
 
         // called when ready to receive call
         ctrl.ready(function () {
-            console.log('phone is ready');
+            console.log('phone is ready', _VCC);
             ctrl.addLocalStream(video_thumb);
         });
 
@@ -54,8 +54,8 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
 
     this.makeCall = function () {
         // User must login in first to make a call
-        if (!window.phone) { 
-            alert('login first!'); 
+        if (!window.phone) {
+            alert('login first!');
         } else  {
             phone.dial(_VCC.number);
             ctrl.isOnline(_VCC.number, function (isOn) {
@@ -89,6 +89,6 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
         } else {
             _VCC.videoValue = 'Pause';
         }
-    }   
+    }
 
 });

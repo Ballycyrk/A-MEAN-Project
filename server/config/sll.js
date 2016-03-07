@@ -22,12 +22,12 @@ var SinglyLinkedList = (function(){
       if (this.head == null) {
         this.head = newNode;
         this.count++;
-      } else if (this.head.user == user) {
+      } else if (this.head.user == user._id) {
         this.head.socket = socket;
       } else {
         var runner = this.head;
         while (runner.next) {
-          if (runner.next.user == user) {
+          if (runner.next.user == user._id) {
             runner.next.socket = socket;
             insert = false;
           }
@@ -40,6 +40,24 @@ var SinglyLinkedList = (function(){
       }
     }
 
+    SinglyLinkedList.prototype.refresh = function (user, socket) {
+      if (this.head == null) {
+        return null;
+      } else if (this.head.user == user._id) {
+        this.head.socket = socket;
+        return this.head;
+      } else {
+        var runner = this.head;
+        while (runner.next) {
+          if (runner.next.user == user._id) {
+            runner.next.socket = socket;
+          }
+          runner = runner.next
+        }
+        return runner;
+      }
+    }
+
     SinglyLinkedList.prototype.remove = function(socket) {
       if (this.head == null) {
         return SinglyLinkedList;
@@ -47,7 +65,7 @@ var SinglyLinkedList = (function(){
         this.head = this.head.next;
       } else {
         var runner = this.head;
-        while (runner.next) {
+        while (runner && runner.next) {
           if (runner.next.socket == socket) {
             runner.next = runner.next.next;
           }
@@ -66,7 +84,7 @@ var SinglyLinkedList = (function(){
           runner = runner.next;
         }
       }
-      return {error: "User not found"};
+      return {error: "User not found"}; // return null
     }
 
     return SinglyLinkedList

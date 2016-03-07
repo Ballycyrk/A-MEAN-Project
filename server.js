@@ -54,17 +54,22 @@ io.sockets.on('connection', function(socket) {
     console.log(users_online.count);
     console.log("----------------------------");
     socket.on("logging-in", function(data) {
-        users_online.insert(data._id, socket.id)
+        users_online.insert(data, socket.id)
         console.log("hello", users_online);
     });
 
+    socket.on("refreshing", function(data) {
+        var you = users_online.refresh(data, socket.id);
+        if (you)
+            you._id = you.user;
+        console.log("refreshed you", you);
+        io.to(socket.id).emit("refreshed", you);
+    });
+
     socket.on("logout", function(data) {
-    	for (var i = 0; i < users_online.length; i++) {
-    		if (users_online[i].id == data.user._id) {
-    			users_online.splice(i, 1);
-    		}
-    	}
-    	io.sockets.emit("users-online", users_online);
+        users_online.remove(socket.id);
+        console.log("logout", users_online);
+        io.sockets.emit("users-online", users_online);
     });
 
     socket.on("requestCall", function(data) {
@@ -78,8 +83,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on("callAccepted", function(data) {
         console.log("***********ACCEPTED*************", data);
-        socket.broadcast.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID
-                                                     });
+        socket.broadcast.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID});
     });
 
     socket.broadcast.on("callDeclined", function(data) {
@@ -89,8 +93,6 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('disconnect', function() {
         console.log("Bye Bye Socket:", socket.id);
-        users_online.remove(socket.id);
-        console.log(users_online);
     })
 })
 

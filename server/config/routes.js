@@ -19,8 +19,7 @@ module.exports = function(app, passport){
   // res.render('login.ejs', {message: req.flash('loginMessage') });
   app.post('/login',            passport.authenticate('local-login', {
     successRedirect : '/localProfile', // redirect to the secure profile section
-    failureRedirect : '/login', // redirect back to the signup page if there is an errorc
-    failureFlash : true // allow flash messages
+    failureRedirect : '/login', // redirect back to the signup page if there is an error
   }));
   app.get('/signup',            function(req,res) {user.fail(req, res) })
   //show the signup form & render the page and pass in any flash data
