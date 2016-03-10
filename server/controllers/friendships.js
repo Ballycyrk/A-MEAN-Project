@@ -39,7 +39,11 @@ module.exports ={
       } else {
         var asked = [];
         for (var i=0; i < success.length; i++){
-          asked.push(success[i].her.username);
+          var temp = {};
+          temp.user = success[i].her.username._id;
+          temp.username = success[i].her.username.username;
+          temp.fStatus = 1;
+          asked.push(temp);
         };
         res.json(asked);
       }
@@ -58,7 +62,11 @@ module.exports ={
       } else {
         var asked = [];
         for (var i=0; i < success.length; i++){
-          asked.push(success[i].his.username);
+          var temp = {};
+          temp.user = success[i].his.username._id;
+          temp.username = success[i].his.username.username;
+          temp.fStatus = 2;
+          asked.push(temp);
         };
         res.json(asked);
       }
@@ -75,12 +83,22 @@ module.exports ={
         res.json(err);
       } else {
         var asked = [];
+        console.log("********************************");
+        console.log(success);
+        console.log("********************************");
         for (var i=0; i < success.length; i++){
+          var temp = {};
           if (req.params.id == success[i].his.username._id) {
-            asked.push(success[i].her.username);
+            temp.user = success[i].her.username._id;
+            temp.username = success[i].her.username.username;
+            temp.fStatus = 3;
+            asked.push(temp);
           }
           if (req.params.id == success[i].her.username._id) {
-            asked.push(success[i].his.username);
+            temp.user = success[i].his.username._id;
+            temp.username = success[i].his.username.username;
+            temp.fStatus = 3;
+            asked.push(temp);
           }
         };
         res.json(asked);

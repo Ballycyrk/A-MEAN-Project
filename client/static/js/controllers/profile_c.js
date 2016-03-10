@@ -4,12 +4,11 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.currentUser = function(){
     userFactory.show($routeParams.id, function(data){
-      console.log("DATA", data)
       if (!data) {
         _this.user = {_id:$routeParams.id};
         socket.emit("refreshing", _this.user);
-      } else if (data.user._id) {
-        _this.user = data.user;
+      } else if (data.user) {
+        _this.user = data;
         userFactory.confirmLogin(_this.user, function(data){
           socket.emit("logging-in", _this.user);
           console.log("YOU",_this.user);
@@ -26,28 +25,17 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.allUsers = function(){
     userFactory.index($routeParams.id, function(data){
-      _this.everyone = data;
-      console.log("EVERYONE:",_this.everyone);
     });
-  }
-
-  this.pending = function(){
-    friendFactory.pending($routeParams.id, function(data){
-      _this.pendingFriends = data;
-      console.log("PENDING", data);
-      var temp = _this.everyone;
-      for (var p = 0; p < _this.pendingFriends.length; p++){
-        for (var e =0; e < _this.everyone.length; e++){
-          if(_this.pendingFriends[p]._id == temp[e]._id){
-            _this.everyone.splice(e,1);
-            break
-          }
-        }
-      }
+    friendFactory.pending($routeParams.id, function(pend){
+      userFactory.friendSort(pend, function(data){
+      });
     });
-  }
-
-  this.confirmed = function(){
+    friendFactory.requested($routeParams.id, function(data){
+      userFactory.friendSort(data, function(data2){
+        _this.everyone = data2;
+        console.log("REQUESTED_VIA", _this.everyone);
+      })
+    })
     friendFactory.confirmed($routeParams.id, function(data){
       _this.friends = data;
       console.log("FRIENDS: ", data);
@@ -72,22 +60,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
         }
       }
     });
-  }
-
-  this.requested = function(){
-    friendFactory.requested($routeParams.id, function(data){
-      _this.requestedFriendship = data;
-      console.log("REQUESTED", data);
-      var temp = _this.everyone;
-      for (var r = 0; r < _this.requestedFriendship.length; r++) {
-        for (var e = 0; e < _this.everyone.length; e++) {
-          if (_this.requestedFriendship[r]._id == temp[e]._id) {
-            _this.everyone.splice(e,1);
-            break
-          }
-        }
-      }
-    })
   }
 
   this.acceptRequest = function(her){
@@ -124,23 +96,23 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   }
   // ************************* SOCKETS ****************************
 
-  socket.on("user-id", function(data) {
-    console.log("USER ID SOCKET IS IN USE!!!!!!!!!!!!");
-    $rootScope.$apply(function(){
-      for (var onlineIdx = 0; onlineIdx < data.length; onlineIdx++) {
-        if (_this.user._id == data[onlineIdx]._id) {
-           _this.user.socket = data[onlineIdx].socket;
-        } else if (_this.friends.length > 0) {
-          for (var idx = 0; idx < _this.friends.length; idx++){
-            if (_this.friends[idx]._id == data[onlineIdx]._id) {
-              _this.friends[idx].socket = data[onlineIdx].socket;
-              _this.friends[idx].online = data[onlineIdx].online;
-            }
-          }
-        }
-      }
-    })
-  });
+  // socket.on("user-id", function(data) {
+  //   console.log("USER ID SOCKET IS IN USE!!!!!!!!!!!!");
+  //   $rootScope.$apply(function(){
+  //     for (var onlineIdx = 0; onlineIdx < data.length; onlineIdx++) {
+  //       if (_this.user._id == data[onlineIdx]._id) {
+  //          _this.user.socket = data[onlineIdx].socket;
+  //       } else if (_this.friends.length > 0) {
+  //         for (var idx = 0; idx < _this.friends.length; idx++){
+  //           if (_this.friends[idx]._id == data[onlineIdx]._id) {
+  //             _this.friends[idx].socket = data[onlineIdx].socket;
+  //             _this.friends[idx].online = data[onlineIdx].online;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   })
+  // });
 
   socket.on("refreshed", function(data) {
     console.log("the new me", data);
@@ -189,7 +161,4 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.currentUser();
   this.allUsers();
-  this.pending();
-  this.requested();
-  this.confirmed();
 })

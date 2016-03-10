@@ -24,10 +24,13 @@ module.exports ={
       if (err) {
         res.json(err);
       } else {
-        var others = []
+        var others = [];
         for (var i=0; i < all.length; i++) {
           if ( all[i]._id != req.params.id){
-            others.push(all[i]);
+            var temp = {};
+            temp.user = all[i]._id;
+            temp.username = all[i].username;
+            others.push(temp);
           }
         }
         res.json(others);

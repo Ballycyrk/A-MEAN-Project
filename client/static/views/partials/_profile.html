@@ -9,14 +9,10 @@
       <div class="well">
         <h3><span class="fa fa-user"></span> Local</h3>
           <p>
-            <strong>id</strong>: <span ng-bind="PC.user._id"></span><br>
+            <strong>id</strong>: <span ng-bind="PC.user.user"></span><br>
             <strong>username</strong>: <span ng-bind="PC.user.username"></span><br>
-            <strong>email</strong>: <span ng-bind="PC.user.local.email"></span>
-            <br>
             <strong>socket</strong>: <span ng-bind="PC.user.socket"></span>
             <br>
-            <strong>password</strong>: <span ng-bind="PC.user.local.password">
-            </span>
           </p>
       </div>
     </div>
@@ -61,24 +57,24 @@
     <tbody>
       <tr ng-repeat="other in PC.everyone">
         <td ng-bind="other.username"></td>
-        <td>
+        <td ng-if="!other.fStatus">
           <button class="btn btn-xs btn-success"
                      ng-click="PC.friendRequest(other)">Send Friend Request
           </button>
         </td>
-      </tr>
-    </tbody>
-    <!-- PENDING FRIEND REQUESTS -->
-    <tbody>
-      <tr ng-repeat="ask in PC.pendingFriends">
-        <td ng-bind="ask.username"></td>
-        <td>
+        <td ng-if="other.fStatus">
           <button class="btn btn-xs btn-warning"
                      ng-click="PC.deleteRequest(ask)">Pending
           </button>
         </td>
       </tr>
     </tbody>
+    <!-- PENDING FRIEND REQUESTS -->
+    <tbody><!--
+      <tr ng-repeat="ask in PC.pendingFriends">
+        <td ng-bind="ask.username"></td>
+      </tr>
+    </tbody> -->
   </table>
 </div>
     <!-- ONLINE FRIENDS -->
