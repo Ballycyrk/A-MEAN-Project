@@ -17,10 +17,10 @@ Node.prototype.show = function() {
 
 Array.prototype.add = function(value){
   var node = new Node(value);
-  if (this[node.fStatus] == null) {
-    this[node.fStatus] = node;
+  if (this[0] == null) {
+    this[0] = node;
   } else {
-    var crawler = this[node.fStatus];
+    var crawler = this[0];
     while (crawler.next) {
       crawler = crawler.next;
     }
@@ -29,13 +29,13 @@ Array.prototype.add = function(value){
 }
 
 Array.prototype.fSort = function (user) {
-  if (user.fStatus == 1 || user.fStatus == 2) {
-    var other = this[0];
-    var ask   = this[user.fStatus];
-  } else {
-    var other = this[user.fStatus];
-    var ask   = this[3];
-  }
+  // if (user.fStatus == 1 || user.fStatus == 2) {
+  var other = this[0];
+  var ask   = this[user.fStatus];
+  // } else {
+  //   var other = this[user.fStatus];
+  //   var ask   = this[3];
+  // }
   if (ask) {
     while (ask.next) {
       ask = ask.next
@@ -46,10 +46,10 @@ Array.prototype.fSort = function (user) {
       ask.next = other;
     else
       this[user.fStatus] = other;
-    if (other.fStatus != 3)
-      this[0] = other.next;
-    else
-      this[user.fStatus] = other.next;
+    // if (other.fStatus != 3)
+    this[0] = other.next;
+    // else
+    //   this[user.fStatus] = other.next;
     other.next = null;
     other.fStatus = user.fStatus;
   } else {

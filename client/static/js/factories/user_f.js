@@ -26,7 +26,15 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     for (var idx = 0; idx < array.length; idx++){
       others.fSort(array[idx]);
     }
-    callback(others)
+    var result = [];
+    for (var idx = 0; idx < 4; idx++) {
+      var runner = others[idx]
+      while (!!runner) {
+        result.push(runner);
+        runner = runner.next;
+      }
+    }
+    callback(result);
   }
 
   factory.loginUser = function(user, callback){

@@ -1,5 +1,5 @@
 <div class="page-header text-center">
-  <h1><span class="fa fa-anchor"></span> Welcome <span ng-bind="_this.user.username"></span></h1>
+  <h1><span class="fa fa-anchor"></span> Welcome <span ng-bind="PC.user.username"></span></h1>
   <button class="btn btn-danger btn-sm" ng-click="PC.logout()">Logout</button>
 </div>
 <div class="inline2">
@@ -28,7 +28,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="request in PC.requestedFriendship">
+      <tr ng-repeat="request in PC.everyone[2]" ng-if="request.fStatus == 2">
         <td ng-bind="request.username"></td>
         <td>
           <button class="btn btn-xs btn-success"
@@ -45,7 +45,7 @@
   </table>
 </div>
 <div class="inline2">
-<!-- OTHER USERS -->
+<!-- OTHER USERS & PENDING REQUESTS -->
   <h3><span class="fa fa-users"></span> Other Users</h3>
   <table class="table table-condensed">
     <thead>
@@ -57,24 +57,18 @@
     <tbody>
       <tr ng-repeat="other in PC.everyone">
         <td ng-bind="other.username"></td>
-        <td ng-if="!other.fStatus">
+        <td>
           <button class="btn btn-xs btn-success"
                      ng-click="PC.friendRequest(other)">Send Friend Request
           </button>
         </td>
-        <td ng-if="other.fStatus">
+        <td ng-if="other.fStatus == 1">
           <button class="btn btn-xs btn-warning"
                      ng-click="PC.deleteRequest(ask)">Pending
           </button>
         </td>
       </tr>
     </tbody>
-    <!-- PENDING FRIEND REQUESTS -->
-    <tbody><!--
-      <tr ng-repeat="ask in PC.pendingFriends">
-        <td ng-bind="ask.username"></td>
-      </tr>
-    </tbody> -->
   </table>
 </div>
     <!-- ONLINE FRIENDS -->
@@ -87,7 +81,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="friend in PC.friends">
+      <tr ng-repeat="friend in PC.everyone[3]">
         <td ng-bind="friend.username"></td>
         <td ng-show="friend.online">
           <button class="btn btn-xs btn-success" ng-click="PC.requestCall(friend)">Chat</button>

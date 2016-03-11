@@ -25,41 +25,21 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.allUsers = function(){
     userFactory.index($routeParams.id, function(data){
-    });
+    })
     friendFactory.pending($routeParams.id, function(pend){
       userFactory.friendSort(pend, function(data){
       });
-    });
+    })
     friendFactory.requested($routeParams.id, function(data){
       userFactory.friendSort(data, function(data2){
-        _this.everyone = data2;
-        console.log("REQUESTED_VIA", _this.everyone);
       })
     })
     friendFactory.confirmed($routeParams.id, function(data){
-      _this.friends = data;
-      console.log("FRIENDS: ", data);
-      if (_this.requestedFriendship) {
-        var temp = _this.requestedFriendship;
-        for (var p = 0; p < _this.friends.length; p++){
-          for (var e =0; e < _this.requestedFriendship.length; e++){
-            if(_this.friends[p]._id == temp[e]._id){
-              _this.requestedFriendship.splice(e,1);
-              break
-            }
-          }
-        }
-      }
-      temp = _this.everyone;
-      for (var p = 0; p < _this.friends.length; p++){
-        for (var e =0; e < _this.everyone.length; e++){
-          if(_this.friends[p]._id == temp[e]._id){
-            _this.everyone.splice(e,1);
-            break
-          }
-        }
-      }
-    });
+      userFactory.friendSort(data, function(data){
+        _this.everyone = data;
+        console.log("WISH", _this.everyone);
+      });
+    })
   }
 
   this.acceptRequest = function(her){
