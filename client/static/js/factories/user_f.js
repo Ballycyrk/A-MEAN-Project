@@ -93,7 +93,7 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   }
 
   factory.logout = function(user, callback){
-    // $cookies.remove('currentUser');
+    $cookies.remove('currentUser');
     console.log('LOGOUT', userLoggedIn.user);
     socket.emit("logout", userLoggedIn.user);
     $http.post('/logout').success(function(data){
