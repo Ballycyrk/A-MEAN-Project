@@ -11,7 +11,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
         _this.user = data;
         userFactory.confirmLogin(_this.user, function(data){
           socket.emit("logging-in", _this.user);
-          console.log("YOU",_this.user);
         });
       };
     });
@@ -37,35 +36,38 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     friendFactory.confirmed($routeParams.id, function(data){
       userFactory.friendSort(data, function(data){
         _this.everyone = data;
-        console.log("WISH", _this.everyone);
+        console.log(_this.everyone);
       });
     })
   }
 
   this.acceptRequest = function(her){
-    friendFactory.accept(_this.user, her, this.confirmed);
+    friendFactory.accept(_this.user, her, function(data){
+      if (data) {
+        her.friend = true;
+        userFactory.friendResort(her, function(data2){
+          _this.everyone = data2;
+        })
+      }
+    });
   }
 
   this.deleteRequest = function(her){
-    friendFactory.delete(_this.user, her);
-    for (var i = 0; i < _this.pendingFriends.length; i++) {
-      if (her._id == _this.pendingFriends[i]._id) {
-        _this.pendingFriends.splice(i,1);
-        _this.everyone.push(her);
-        break;
-      }
-    }
-    for (var i = 0; i < _this.requestedFriendship.length; i++) {
-      if (her._id == _this.requestedFriendship[i]._id) {
-        _this.requestedFriendship.splice(i,1);
-        _this.everyone.push(her);
-        break;
-      }
-    }
+    friendFactory.delete(_this.user, her, function(data){
+      userFactory.friendResort(data, function(data2){
+        _this.everyone = data2;
+      });
+    });
   }
 
   this.friendRequest = function(her){
-    friendFactory.request(_this.user, her, this.pending);
+    var temp = [];
+    friendFactory.request(_this.user, her, function(data){
+      if (data) {
+        temp.push(data);
+        userFactory.friendSort(temp, function(data2){})
+      }
+    });
   }
 
   this.requestCall = function(friend){

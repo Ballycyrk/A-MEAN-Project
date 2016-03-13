@@ -3,8 +3,8 @@ var Node = function(user){
     this.user = user._id
   else
     this.user = user.user;
-  if (user.fStatus)
-    this.fStatus = user.fStatus;
+  if (user.idx)
+    this.fStatus = user.idx;
   else
     this.fStatus = 0;
   this.username = user.username;
@@ -17,10 +17,10 @@ Node.prototype.show = function() {
 
 Array.prototype.add = function(value){
   var node = new Node(value);
-  if (this[0] == null) {
-    this[0] = node;
+  if (this[node.fStatus] == null) {
+    this[node.fStatus] = node;
   } else {
-    var crawler = this[0];
+    var crawler = this[node.fStatus];
     while (crawler.next) {
       crawler = crawler.next;
     }
@@ -28,13 +28,29 @@ Array.prototype.add = function(value){
   }
 }
 
-Array.prototype.fSort = function (user) {
-  // if (user.fStatus == 1 || user.fStatus == 2) {
+Array.prototype.remove = function(user) {
+  var runner = this[user.fStatus];
+  if (runner.user == user.user) {
+    this[user.fStatus] = runner.next;
+  } else {
+    while (runner.next) {
+      if (runner.next.user == user.user) {
+        runner.next = runner.next.next;
+        break
+      } else {
+        runner = runner.next
+      }
+    }
+  }
+}
+
+Array.prototype.fSort = function(user) {
+  // if (!user.dest && user.dest !== 0) {
   var other = this[0];
   var ask   = this[user.fStatus];
   // } else {
   //   var other = this[user.fStatus];
-  //   var ask   = this[3];
+  //   var ask   = this[user.dest];
   // }
   if (ask) {
     while (ask.next) {
@@ -69,4 +85,16 @@ Array.prototype.fSort = function (user) {
     other.next = other.next.next
     temp.next = null;
   }
+}
+
+Array.prototype.unpack = function() {
+  var result = [];
+  for (var idx = 0; idx < 4; idx++) {
+    var runner = this[idx]
+    while (!!runner) {
+      result.push(runner);
+      runner = runner.next;
+    }
+  }
+  return result
 }

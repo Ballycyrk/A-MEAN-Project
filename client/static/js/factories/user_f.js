@@ -26,15 +26,17 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     for (var idx = 0; idx < array.length; idx++){
       others.fSort(array[idx]);
     }
-    var result = [];
-    for (var idx = 0; idx < 4; idx++) {
-      var runner = others[idx]
-      while (!!runner) {
-        result.push(runner);
-        runner = runner.next;
-      }
-    }
-    callback(result);
+    callback(others.unpack());
+  }
+
+  factory.friendResort = function(user, callback){
+    others.remove(user);
+    if (user.friend)
+      user.idx = 3;
+    else
+      user.idx = 0;
+    others.add(user);
+    callback(others.unpack());
   }
 
   factory.loginUser = function(user, callback){
@@ -60,8 +62,6 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   }
 
   factory.loggedin = function(user, callback){
-    console.log('user', user);
-    console.log('UserLoggedIn', userLoggedIn);
     if (userLoggedIn.user == user.user) {
       console.log("YES");
       callback(user);
@@ -94,16 +94,21 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
 
   factory.logout = function(user, callback){
     // $cookies.remove('currentUser');
-    console.log('LOGOUT', userLoggedIn);
-    socket.emit("logout", userLoggedIn.user._id);
-    $http.post('/logout', userLoggedIn.user).success(function(data){
+    console.log('LOGOUT', userLoggedIn.user);
+    socket.emit("logout", userLoggedIn.user);
+    $http.post('/logout').success(function(data){
       if (data){
         userLoggedIn = {};
+        others = new Array(4);
         callback(false)
       } else {
         console.log("Error with logout");
       }
     });
+  }
+
+  factory.clear = function(){
+        others = new Array(4);
   }
 
   return factory;

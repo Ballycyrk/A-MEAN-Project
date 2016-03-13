@@ -5,10 +5,10 @@ var Schema        = mongoose.Schema;
 var FriendshipSchema = new Schema({
   confirmed       : {type: Boolean, default: false},
   his             : {
-    username      : { type: Schema.Types.ObjectId, ref: 'User'}
+    username      : { type: Object}
   },
   her             : {
-    username      : { type: Schema.Types.ObjectId, ref: 'User'}
+    username      : { type: Object}
   }
 });
 

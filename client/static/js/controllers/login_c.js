@@ -13,5 +13,11 @@ ballyCyrk.controller('loginController', function(userFactory, $location){
       }
     });
   }
+
+  this.clearOthers = function(){
+    userFactory.clear()
+  }
+
+  this.clearOthers();
 })
 

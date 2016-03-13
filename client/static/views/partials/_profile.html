@@ -28,7 +28,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="request in PC.everyone[2]" ng-if="request.fStatus == 2">
+      <tr ng-repeat="request in PC.everyone" ng-if="request.fStatus == 2">
         <td ng-bind="request.username"></td>
         <td>
           <button class="btn btn-xs btn-success"
@@ -56,15 +56,16 @@
     </thead>
     <tbody>
       <tr ng-repeat="other in PC.everyone">
-        <td ng-bind="other.username"></td>
-        <td>
+        <td ng-bind="other.username" ng-if="other.fStatus == 0 ||
+                                            other.fStatus == 1"></td>
+        <td ng-if="other.fStatus == 0">
           <button class="btn btn-xs btn-success"
                      ng-click="PC.friendRequest(other)">Send Friend Request
           </button>
         </td>
         <td ng-if="other.fStatus == 1">
           <button class="btn btn-xs btn-warning"
-                     ng-click="PC.deleteRequest(ask)">Pending
+                     ng-click="PC.deleteRequest(other)">Pending
           </button>
         </td>
       </tr>
@@ -81,7 +82,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="friend in PC.everyone[3]">
+      <tr ng-repeat="friend in PC.everyone" ng-if="friend.fStatus == 3">
         <td ng-bind="friend.username"></td>
         <td ng-show="friend.online">
           <button class="btn btn-xs btn-success" ng-click="PC.requestCall(friend)">Chat</button>

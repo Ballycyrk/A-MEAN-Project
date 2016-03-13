@@ -73,7 +73,6 @@ module.exports = function(app, passport){
   // LOGOUT ==============================
   // =====================================
   app.post('/logout', function(req, res) {
-    user.logout(req, res)
     req.logout();
     res.json({success: true});
   });

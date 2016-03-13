@@ -60,8 +60,8 @@ io.sockets.on('connection', function(socket) {
 
     socket.on("refreshing", function(data) {
         var you = users_online.refresh(data, socket.id);
-        if (you)
-            you._id = you.user;
+        // if (you)
+        //     you._id = you.user;
         console.log("refreshed you", you);
         io.to(socket.id).emit("refreshed", you);
     });

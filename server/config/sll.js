@@ -41,11 +41,13 @@ var SinglyLinkedList = (function(){
     }
 
     SinglyLinkedList.prototype.refresh = function (user, socket) {
+      var user = {};
       if (this.head == null) {
         return null;
       } else if (this.head.user == user._id) {
         this.head.socket = socket;
-        return this.head;
+        user.user     = this.head.user;
+        user.username = this.head.username;
       } else {
         var runner = this.head;
         while (runner.next) {
@@ -54,8 +56,10 @@ var SinglyLinkedList = (function(){
           }
           runner = runner.next
         }
-        return runner;
+        user.user = runner.user;
+        user.username = runner.username;
       }
+      return user;
     }
 
     SinglyLinkedList.prototype.remove = function(socket) {

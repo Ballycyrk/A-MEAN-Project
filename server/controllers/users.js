@@ -36,12 +36,6 @@ module.exports ={
         res.json(others);
       }
     });
-  },
-  logout: function(req, res){
-    User.findOne({_id: req.body._id}, function (err, user){
-      user.online = false;
-      user.save();
-    });
   }
 };
 
