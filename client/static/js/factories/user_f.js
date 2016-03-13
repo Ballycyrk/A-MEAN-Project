@@ -1,5 +1,6 @@
 ballyCyrk.factory('userFactory', function($http, $cookies){
   var userLoggedIn = {};
+  var others = new Array(4);
   var factory = {};
 
   function setCookie(output) {
@@ -14,15 +15,35 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
 
   factory.index = function(id, callback){
     $http.get('/users/'+id).success(function(output){
-      callback(output);
+      for (var idx = 0; idx < output.length; idx++) {
+        others.add(output[idx]);
+      }
+      callback(others);
     })
+  }
+
+  factory.friendSort = function(array, callback){
+    for (var idx = 0; idx < array.length; idx++){
+      others.fSort(array[idx]);
+    }
+    callback(others.unpack());
+  }
+
+  factory.friendResort = function(user, callback){
+    others.remove(user);
+    if (user.friend)
+      user.idx = 3;
+    else
+      user.idx = 0;
+    others.add(user);
+    callback(others.unpack());
   }
 
   factory.loginUser = function(user, callback){
     $http.post('/login', user).success(function(output){
-      userLoggedIn = output; //consider boiling this down
-      console.log("userLogin", output)
-      callback(output);
+      userLoggedIn.user = output.user._id; //consider boiling this down
+      userLoggedIn.username = output.user.username
+      callback(userLoggedIn);
     })
   }
 
@@ -34,8 +55,7 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   }
 
   factory.google = function(callback){
-      $http.get('/auth/google').success(function(output){
-<<<<<<< HEAD
+    $http.get('/auth/google').success(function(output){
       callback(output);
     })
   }
@@ -44,17 +64,13 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     $http.get('/user/'+id).success(function(output){
       socket.emit("getId", output);
       setCookie(output);
-=======
       userLoggedIn = output; //consider boiling this down
->>>>>>> sll
       callback(output);
     })
   }
 
   factory.loggedin = function(user, callback){
-    console.log('user', user);
-    console.log('UserLoggedIn', userLoggedIn);
-    if (userLoggedIn.user._id == user._id) {
+    if (userLoggedIn.user == user.user) {
       console.log("YES");
       callback(user);
     } else {
@@ -64,7 +80,6 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   }
 
   factory.show = function(id, callback){
-    console.log("SHOW", id, userLoggedIn);
     if (!userLoggedIn.user)
       callback(null);
     else
@@ -72,7 +87,7 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   }
 
   factory.confirmLogin = function(user, callback){
-    if (userLoggedIn.user._id == user._id){
+    if (userLoggedIn.user == user.user){
       callback(true);
     } else {
     console.log("user logged in - else clause", userLoggedIn);
@@ -87,16 +102,21 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
 
   factory.logout = function(user, callback){
     // $cookies.remove('currentUser');
-    console.log('LOGOUT', userLoggedIn);
-    socket.emit("logout", userLoggedIn.user._id);
-    $http.post('/logout', userLoggedIn.user).success(function(data){
+    console.log('LOGOUT', userLoggedIn.user);
+    socket.emit("logout", userLoggedIn.user);
+    $http.post('/logout').success(function(data){
       if (data){
         userLoggedIn = {};
+        others = new Array(4);
         callback(false)
       } else {
         console.log("Error with logout");
       }
     });
+  }
+
+  factory.clear = function(){
+        others = new Array(4);
   }
 
   return factory;

@@ -6,12 +6,18 @@ ballyCyrk.controller('loginController', function(userFactory, $location){
       if (data.message){
         _this.message = data
       } else {
-        _this.user = data.user;
-        console.log(_this.user);
+        _this.user = data;
         userFactory.loggedin(_this.user, function(data){
-          $location.path('/profile/'+data._id);
+          $location.path('/profile/'+data.user);
         });
       }
     });
   }
+
+  this.clearOthers = function(){
+    userFactory.clear()
+  }
+
+  this.clearOthers();
 })
+
