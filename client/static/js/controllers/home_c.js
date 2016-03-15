@@ -4,6 +4,7 @@ ballyCyrk.controller('homeController', function(userFactory, $location){
   this.facebook = function(){
     userFactory.facebook(function(data){
       console.log('HOME', data);
+      debugger
     });
   };
 

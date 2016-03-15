@@ -1,11 +1,7 @@
-ballyCyrk.factory('userFactory', function($http, $cookies){
+ballyCyrk.factory('userFactory', function($http){
   var userLoggedIn = {};
   var others = new Array(4);
   var factory = {};
-
-  function setCookie(output) {
-    $cookies.putObject('currentUser', output);
-  }
 
   factory.create = function(user, callback){
     $http.post('/signup', user).success(function(output){
@@ -49,6 +45,7 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
 
   factory.facebook = function(callback){
     $http.get('/auth/facebook').success(function(output){
+      console.log('USR FCT', output)
       userLoggedIn = output; //consider boiling this down
       callback(output);
     })
@@ -63,7 +60,6 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   factory.show = function(id, callback){
     $http.get('/user/'+id).success(function(output){
       socket.emit("getId", output);
-      setCookie(output);
       userLoggedIn = output; //consider boiling this down
       callback(output);
     })
@@ -101,10 +97,10 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   }
 
   factory.logout = function(user, callback){
-    $cookies.remove('currentUser');
     console.log('LOGOUT', userLoggedIn.user);
     socket.emit("logout", userLoggedIn.user);
     $http.post('/logout').success(function(data){
+      console.log(data);
       if (data){
         userLoggedIn = {};
         others = new Array(4);

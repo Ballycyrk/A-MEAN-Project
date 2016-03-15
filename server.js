@@ -7,7 +7,7 @@ var passport         = require('passport');
 var cookieParser     = require('cookie-parser');
 var bodyParser       = require('body-parser');
 var session          = require('express-session');
-var SinglyLinkedList = require('./server/config/sll.js');
+var users_online     = require('./server/models/onlineUsers.js');
 var app              = express();
 
 
@@ -44,29 +44,30 @@ var httpsServer = https.createServer(options, app);
 var server = httpsServer.listen(port, function() {console.log('this should work')});
 
 // SOCKET CONNECTION //
-var users_online = new SinglyLinkedList;
 
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
     console.log("We are using sockets");
     console.log(socket.id);
-    console.log("----------------------------");
-    // console.log(users_online);
-    console.log("----------------------------");
     socket.on("logging-in", function(data) {
         users_online.insert(data, socket.id)
-        console.log("hello", users_online);
+        console.log("----------------------------");
+        console.log(users_online.show());
+        console.log("----------------------------");
     });
 
     socket.on("refreshing", function(data) {
         var you = users_online.refresh(data, socket.id);
-        console.log("refreshed you", you);
         io.to(socket.id).emit("refreshed", you);
+        console.log("----------------------------");
+        console.log(users_online.show());
+        console.log("----------------------------");
     });
 
     socket.on("logout", function(data) {
+        console.log(data);
         users_online.remove(socket.id);
-        console.log("logout", users_online);
+        console.log("logout", users_online.show());
         io.sockets.emit("users-online", users_online);
     });
 

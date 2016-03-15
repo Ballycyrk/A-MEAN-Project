@@ -4,6 +4,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.currentUser = function(){
     userFactory.show($routeParams.id, function(data){
+      console.log("currentUser", data);
       if (!data) {
         _this.user = {_id:$routeParams.id};
         socket.emit("refreshing", _this.user);

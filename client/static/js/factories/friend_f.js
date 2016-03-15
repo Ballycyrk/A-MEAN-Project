@@ -22,7 +22,6 @@ ballyCyrk.factory('friendFactory', function($http){
   }
 
   factory.pending = function(id, callback){
-      console.log("ID", id)
     $http.get('/pending/'+id).success(function(output){
       callback(output);
     });

@@ -84,9 +84,6 @@ module.exports ={
         res.json(err);
       } else {
         var asked = [];
-        console.log("********************************");
-        console.log(success);
-        console.log("********************************");
         for (var i=0; i < success.length; i++){
           var temp = {};
           if (req.params.id == success[i].his.username.user) {

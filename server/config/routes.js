@@ -1,5 +1,6 @@
 var user                = require('../controllers/users.js');
 var friendship          = require('../controllers/friendships.js');
+var users_online        = require('../models/onlineUsers.js');
 
 module.exports = function(app, passport){
   app.get('/user/:id',      user.get)
@@ -65,7 +66,7 @@ module.exports = function(app, passport){
   app.get('/localProfile', isLoggedIn, function(req, res) {
     res.json({user: req.user});
   });
-  app.get('/profile', isLoggedIn, function(req, res) {
+  app.get('/profile', isLoggedIn, setProfile, function(req, res) {
     res.redirect('/#/profile/'+req.user._id);
   });
 
@@ -80,12 +81,15 @@ module.exports = function(app, passport){
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
-  // console.log(req.isAuthenticated());
-  // console.log(next());
   //if user is authenticated in the session, carry on
   if (req.isAuthenticated())
     return next();
 
   //if they aren't redirect them to the home page
   res.redirect('/');
+}
+
+function setProfile(req, res, next) {
+  users_online.insert(req.user);
+  return next();
 }
