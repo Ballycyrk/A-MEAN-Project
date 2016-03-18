@@ -3,7 +3,6 @@ var friendship          = require('../controllers/friendships.js');
 var users_online        = require('../models/onlineUsers.js');
 
 module.exports = function(app, passport){
-  app.get('/user/:id',      user.get)
   app.get('/users/:id',     user.index)
   app.get('/login',         user.nolog)
   app.post('/request',      friendship.request)

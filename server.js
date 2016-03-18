@@ -53,6 +53,7 @@ io.sockets.on('connection', function(socket) {
         users_online.insert(data, socket.id)
         console.log("----------------------------");
         console.log(users_online.show());
+        socket.broadcast.emit("new_online", data.user);
         console.log("----------------------------");
     });
 
@@ -61,6 +62,8 @@ io.sockets.on('connection', function(socket) {
         io.to(socket.id).emit("refreshed", you);
         console.log("----------------------------");
         console.log(users_online.show());
+        console.log("REFRESH", data);
+        socket.broadcast.emit("new_online", data._id);
         console.log("----------------------------");
     });
 
@@ -68,7 +71,8 @@ io.sockets.on('connection', function(socket) {
         console.log(data);
         users_online.remove(socket.id);
         console.log("logout", users_online.show());
-        io.sockets.emit("users-online", users_online);
+        // io.sockets.emit("users-online", users_online);
+        socket.broadcast.emit("disconnected", data);
     });
 
     socket.on("requestCall", function(data) {
@@ -91,7 +95,10 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function() {
-        console.log("Bye Bye Socket:", socket.id);
+        var user = users_online.disconnect(socket.id);
+        console.log("disconnect this id", user);
+        console.log("disconnect", users_online.show());
+        socket.broadcast.emit("disconnected", user);
     })
 })
 

@@ -2,6 +2,7 @@
 var mongoose      = require('mongoose');
 var Friendship    = mongoose.model('Friendship');
 var User          = mongoose.model('User');
+var users_online  = require('../models/onlineUsers.js');
 
 module.exports ={
   request: function(req, res){
@@ -86,16 +87,23 @@ module.exports ={
         var asked = [];
         for (var i=0; i < success.length; i++){
           var temp = {};
+          temp.fStatus = 3;
           if (req.params.id == success[i].his.username.user) {
             temp.user = success[i].her.username.user;
             temp.username = success[i].her.username.username;
-            temp.fStatus = 3;
+            if (users_online.findSocket(success[i].her.username.user)) {
+              console.log("ONLINE!!!");
+              temp.oStatus = true;
+            }
             asked.push(temp);
           }
           if (req.params.id == success[i].her.username.user) {
             temp.user = success[i].his.username.user;
             temp.username = success[i].his.username.username;
-            temp.fStatus = 3;
+            if (users_online.findSocket(success[i].his.username.user)) {
+              console.log("ONLINE!!!");
+              temp.oStatus = true;
+            }
             asked.push(temp);
           }
         };

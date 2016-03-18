@@ -4,7 +4,6 @@ var Schema        = mongoose.Schema;
 
 var UserSchema    = new Schema({
   username        : {type: String },
-  online          : {type: Boolean},
   email           : { type: String },
   local           : {
     email         : { type: String },

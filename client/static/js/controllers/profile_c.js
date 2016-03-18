@@ -1,10 +1,9 @@
 
-ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $rootScope, $window){
+ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $scope, $window){
   var _this = this;
 
   this.currentUser = function(){
     userFactory.show($routeParams.id, function(data){
-      console.log("currentUser", data);
       if (!data) {
         _this.user = {_id:$routeParams.id};
         socket.emit("refreshing", _this.user);
@@ -37,7 +36,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     friendFactory.confirmed($routeParams.id, function(data){
       userFactory.friendSort(data, function(data){
         _this.everyone = data;
-        console.log(_this.everyone);
+        console.log("everyone", _this.everyone);
       });
     })
   }
@@ -97,12 +96,37 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   // });
 
   socket.on("refreshed", function(data) {
-    console.log("the new me", data);
     _this.user = data;
     if (!_this.user)
       $location.path('#/');
     else
       userFactory.refresh(_this.user);
+  });
+
+  socket.on("disconnected", function(data) {
+    $scope.$apply(function(){
+      var gBye = {
+        id: data,
+        oStatus: false
+      };
+      userFactory.update(gBye, function(output){
+        this.everyone = output;
+        console.log("bye", _this.everyone);
+      });
+    });
+  });
+
+  socket.on("new_online", function(data) {
+    $scope.$apply(function(){
+      var hello = {
+        id: data,
+        oStatus: true
+      };
+      userFactory.update(hello, function(output){
+        this.everyone = output;
+        console.log("welcome", _this.everyone);
+      });
+    });
   });
 
   socket.on("requestingCall", function(data) {

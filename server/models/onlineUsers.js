@@ -28,11 +28,12 @@ module.exports = {
     }
   },
   refresh: function(user, socket) {
+    console.log("REFRESH", user);
     var newGuy = {};
     if (head == null) {
       return null;
     } else if (head.user == user._id) {
-      head.socket = socket;
+      head.socket     = socket;
       newGuy.user     = head.user;
       newGuy.username = head.username;
     } else {
@@ -40,11 +41,12 @@ module.exports = {
       while (runner) {
         if (runner.user == user._id) {
           runner.socket = socket;
+          newGuy.user = runner.user;
+          newGuy.username = runner.username;
+          break;
         }
         runner = runner.next
       }
-      newGuy.user = runner.user;
-      newGuy.username = runner.username;
     }
     return newGuy;
   },
@@ -67,13 +69,27 @@ module.exports = {
   findSocket: function(userID) {
     var runner = head;
     while (runner) {
-      if (runner.user == userID) {
+      if (runner.user == userID && runner.socket) {
         return runner.socket;
       } else {
         runner = runner.next;
       }
     }
-    return {error: "User not found"}; // return null
+    // return {error: "User not found"}; // return null
+    return false;
+  },
+  disconnect: function(socket) {
+    var runner = head;
+    while (runner) {
+      if (runner.socket == socket) {
+        runner.socket = null;
+        return runner.user;
+      } else {
+        runner = runner.next;
+      }
+    }
+    // return {error: "User not found"}; // return null
+    return false;
   },
   show: function(){
     console.log("COUNT", count);

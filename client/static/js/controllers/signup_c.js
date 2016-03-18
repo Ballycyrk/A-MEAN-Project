@@ -6,10 +6,9 @@ ballyCyrk.controller('signupController', function(userFactory, $location){
       if (data.message){
         _this.message = data;
       } else {
-        _this.user = data.user;
+        _this.user = data;
         userFactory.loggedin(_this.user, function(data){
-          var id = data._id;
-          $location.path('/profile/'+id);
+          $location.path('/profile/'+data.user);
         });
       }
     });

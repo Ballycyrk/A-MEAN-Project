@@ -84,10 +84,10 @@
     <tbody>
       <tr ng-repeat="friend in PC.everyone" ng-if="friend.fStatus == 3">
         <td ng-bind="friend.username"></td>
-        <td ng-show="friend.online">
+        <td ng-show="friend.oStatus">
           <button class="btn btn-xs btn-success" ng-click="PC.requestCall(friend)">Chat</button>
         </td>
-        <td ng-hide="friend.online">
+        <td ng-hide="friend.oStatus">
           <button class="btn btn-xs">Offline</button>
         </td>
       </tr>
