@@ -10,12 +10,13 @@ module.exports = {
     if (head == null) {
       head = newNode;
       count++;
-    } else if (head.user == user._id) {
+    } else if (head.user == newNode.user) {
       head.socket = socket;
+      insert = false;
     } else {
       var runner = head;
       while (runner.next) {
-        if (runner.next.user == user._id) {
+        if (runner.next.user == newNode.user) {
           runner.next.socket = socket;
           insert = false;
         }

@@ -76,21 +76,17 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on("requestCall", function(data) {
-        console.log("request", data)
         var host = users_online.findSocket(data.hostId);
         var friend = users_online.findSocket(data.receptionSocket);
-        console.log("host", host)
-        console.log("friend", friend)
-        socket.broadcast.to(friend).emit("requestingCall", {"donorSocket": host, "donorName": data.hostName});
+        socket.broadcast.to(friend).emit("requestingCall", {"donorSocket": host, "donorName": data.hostName, "mySocket": friend});
     });
 
     socket.on("callAccepted", function(data) {
-        console.log("***********ACCEPTED*************", data);
-        socket.broadcast.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID});
+        console.log(data);
+        socket.broadcast.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID, "friend": data.friend});
     });
 
     socket.broadcast.on("callDeclined", function(data) {
-        console.log("***********DECLINE*************", data);
         socket.broadcast.to(data.donorSocket).emit("callDeclined");
     });
 

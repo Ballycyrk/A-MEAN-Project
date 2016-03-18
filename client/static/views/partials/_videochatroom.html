@@ -10,12 +10,12 @@
 	<div id='vid-thumb'></div>
 
 	<form id='login-form'>
-	    <input type='text' placeholder='add a username!' ng-model='VCC.currentUser.username'>
+	    <input type='text' ng-model='VCC.user.username'>
 	    <button ng-click='VCC.login()'>Login!</button>
 	</form>
 
 	<form id='call-form'>
-	    <input type='text' placeholder='call a user!' ng-model='VCC.number'>
+	    <input type='text' ng-model='VCC.friend'>
 	    <button ng-click='VCC.makeCall()'>Call!</button>
 	</form>
 

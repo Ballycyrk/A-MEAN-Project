@@ -1,24 +1,29 @@
-ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $location, $rootScope) {
+ballyCyrk.controller('VideoChatController', function (userFactory, $location, $rootScope) {
     _VCC = this;
     _VCC.audioValue = 'Mute';
     _VCC.videoValue = 'Pause';
-    console.log('Hello');
 
-    this.back = function() {
-        console.log('/profile/' + $cookies.getObject('currentUser')._id);
-        $location.path('/profile/' + $cookies.getObject('currentUser')._id);
+    this.currentCall = function(){
+        userFactory.videoCallers(function(data){
+            if (data.me) {
+                _VCC.user   = data.me;
+                _VCC.friend = data.friend;
+            } else {
+                $location.path('/#');
+            }
+            console.log("CALLERS", data.me, data.friend);
+        });
     }
 
-    this.logout = function(){
-      socket.emit("logout", {user: $cookies.getObject('currentUser')._id});
-      if (!$cookies.getObject('currentUser')){
-        $location.path('#/')
-      } else {
-          userFactory.logout($cookies.getObject('currentUser'), function(data){
-              console.log(data);
-              if (!data) { $location.path('#/'); };
+    this.back = function() {
+        console.log('/profile/' + _VCC.user.user);
+        $location.path('/profile/' + _VCC.user.user);
+    }
+
+    this.logout = function() {
+        userFactory.logout(_VCC.user, function(data){
+            if (!data) { $location.path('#/'); };
         });
-      }
     }
 
     var video_out = document.getElementById('vid-box');
@@ -28,7 +33,7 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
         // publish_key and subscribe_key, create a pubnub account and
         // get the information from there
         var phone = window.phone = PHONE({
-            number : _VCC.currentUser.username || 'Anonymous',
+            number : _VCC.user.username || 'Anonymous',
             publish_key : 'pub-c-ab154ce3-2bea-4bc0-ab76-92bdff619817',
             subscribe_key: 'sub-c-e6500642-b106-11e5-a8f0-0619f8945a4f',
             ssl: true
@@ -57,9 +62,9 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
         if (!window.phone) {
             alert('login first!');
         } else  {
-            phone.dial(_VCC.number);
-            ctrl.isOnline(_VCC.number, function (isOn) {
-                if (isOn) { ctrl.dial(_VCC.number); }
+            phone.dial(_VCC.friend);
+            ctrl.isOnline(_VCC.friend, function (isOn) {
+                if (isOn) { ctrl.dial(_VCC.friend); }
                 else { alert('User is Offline'); }
             });
         }
@@ -91,4 +96,5 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $lo
         }
     }
 
+    this.currentCall();
 });

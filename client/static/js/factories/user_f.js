@@ -1,5 +1,6 @@
 ballyCyrk.factory('userFactory', function($http){
   var userLoggedIn = {};
+  var onCallWith = "";
   var others = new Array(4);
   var factory = {};
 
@@ -68,6 +69,7 @@ ballyCyrk.factory('userFactory', function($http){
     $http.post('/logout').success(function(data){
       if (data){
         userLoggedIn = {};
+        onCallWith = "";
         others = new Array(4);
         callback(false)
       } else {
@@ -111,6 +113,15 @@ ballyCyrk.factory('userFactory', function($http){
     others.update(user);
     callback(others.unpack());
   }
+
+  factory.videoCallers = function(callback){
+    callback({me: userLoggedIn, friend: onCallWith});
+  }
+
+  factory.chat = function(friend){
+    onCallWith = friend;
+  }
+
   return factory;
 })
 
