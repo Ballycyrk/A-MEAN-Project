@@ -13,10 +13,13 @@ ballyCyrk.factory('userFactory', function($http){
 
   factory.loginUser = function(user, callback){
     $http.post('/login', user).success(function(output){
-      console.log(output);
-      userLoggedIn.user = output.user._id;
-      userLoggedIn.username = output.user.username;
-      callback(userLoggedIn);
+      if (output.message) {
+        callback(output);
+      } else {
+        userLoggedIn.user = output.user._id;
+        userLoggedIn.username = output.user.username;
+        callback(userLoggedIn);
+      }
     })
   }
 
