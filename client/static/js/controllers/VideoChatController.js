@@ -11,7 +11,6 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $location, $r
             } else {
                 $location.path('/#');
             }
-            console.log("CALLERS", data.me, data.friend);
         });
     }
 
@@ -64,6 +63,7 @@ ballyCyrk.controller('VideoChatController', function (userFactory, $location, $r
         } else  {
             phone.dial(_VCC.friend);
             ctrl.isOnline(_VCC.friend, function (isOn) {
+                console.log(isOn);
                 if (isOn) { ctrl.dial(_VCC.friend); }
                 else { alert('User is Offline'); }
             });
