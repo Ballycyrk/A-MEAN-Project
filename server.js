@@ -34,6 +34,9 @@ app.use('/notie', express.static(__dirname + '/node_modules/notie'));
 var routes_setter = require('./server/config/routes.js');
 routes_setter(app, passport, session); //load our routes and pass in our app and fully configured passport.
 
+
+// Generates bad gateway
+/* ****************
 var options = {
     key: fs.readFileSync('certs/key.pem'),
     cert: fs.readFileSync('certs/cert.pem')
@@ -42,6 +45,9 @@ var options = {
 var httpsServer = https.createServer(options, app);
 
 var server = httpsServer.listen(port, function() {console.log('this should work')});
+************************ */
+// End of bad gateway
+var server = app.listen(port, function(){console.log('I am listener');});
 
 // SOCKET CONNECTION //
 
